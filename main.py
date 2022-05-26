@@ -12,6 +12,7 @@ logger.setLevel(logging.DEBUG)
 
 @bot.message_handler(commands=["start"])
 def start(message):
+    user_id = message.from_user.id
     username = message.from_user.username
     bot.reply_to(message, f"Hello, {username}!")
 
