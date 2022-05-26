@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="PY-221.5591.52">
+    <data-source name="d5bcsll809pbb1@ec2-52-30-67-143.eu-west-1.compute.amazonaws.com" uuid="7eea9a67-a47e-4831-b3c1-71fbe3e7202f">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" exact-version="0" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>emwbklwpovlatd</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
