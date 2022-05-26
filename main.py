@@ -24,9 +24,11 @@ def start(message):
     result = db_object.fetchone()
 
     if not result:
-        db_object.execute("INSERT INTO users(user_id, user_nickname, user_role, group_id, teacher_id) "
-                          "VALUES(%s,%s,%s,%s,%s)", (id, username, 0, 0, 0))
+        db_object.execute(
+            "INSERT INTO users(user_id, user_nickname, user_role, group_id, teacher_id) VALUES(%s,%s,%s,%s,%s)",
+            (id, username, 0, 0, 0))
         db_connection.commit()
+
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
 def redirect_message():
