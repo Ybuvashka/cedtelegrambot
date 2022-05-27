@@ -37,6 +37,12 @@ def start(message):
                      reply_markup=markup)
 
 
+@bot.message_handler(content_types=["text"])
+def bot_message(message):
+    if message.chat.type == "Студент":
+        bot.send_message(message.chat.id,"Ага попавсь")
+
+
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
 def redirect_message():
     json_string = request.get_data().decode("utf-8")
