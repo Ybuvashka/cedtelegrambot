@@ -1,5 +1,6 @@
 import os
-from telebot import types
+import types
+import telebot
 import logging
 import psycopg2
 from config import *
