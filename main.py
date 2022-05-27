@@ -18,13 +18,13 @@ db_object = db_connection.cursor()
 def start(message):
     user_id = message.from_user.id
     username = message.from_user.username
-    bot.reply_to(message, f"Hello, {username}!")
+    bot.send_message(message.chat.id, f"Hello, {username}!")
 
     db_object.execute(f"SELECT user_id from users where user_id = {user_id}")
     result = db_object.fetchone()
 
     if not result:
-        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",(user_id, username, 0,))
+        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",(user_id, username, 0))
         db_connection.commit()
 
 
