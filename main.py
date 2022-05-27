@@ -39,7 +39,7 @@ def start(message):
 
 @bot.message_handler(content_types=["text"])
 def bot_message(message):
-    if message.chat.type == "Студент":
+    if message.text == "Студент":
         bot.send_message(message.chat.id,"Ага попавсь")
 
 
