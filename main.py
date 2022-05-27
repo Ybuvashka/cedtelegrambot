@@ -19,7 +19,6 @@ db_object = db_connection.cursor()
 def start(message):
     user_id = message.from_user.id
     username = message.from_user.username
-    bot.send_message(message.chat.id, f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:")
 
     db_object.execute(f"SELECT user_id from users where user_id = {user_id}")
     result = db_object.fetchone()
@@ -31,6 +30,12 @@ def start(message):
     markup = types.ReplyKeyBoardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton(f"Студент")
     item2 = types.KeyboardButton(f"Викладач")
+    markup.add(item1,item2)
+
+    bot.send_message(message.chat.id,
+                     f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:",
+                     reply_markup=markup)
+
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
