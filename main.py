@@ -1,11 +1,10 @@
 import os
-import types
-
 import telebot
 import logging
 import psycopg2
 from config import *
 from flask import Flask, request
+from telebot import types
 
 bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
@@ -28,7 +27,7 @@ def start(message):
         db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",(user_id, username, 0))
         db_connection.commit()
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton(f"Студент")
     item2 = types.KeyboardButton(f"Викладач")
     markup.add(item1,item2)
