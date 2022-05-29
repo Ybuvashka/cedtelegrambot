@@ -36,7 +36,7 @@ def start(message):
                          reply_markup=markup)
 
         db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                          (user_id, username, bot.register_next_step_handler(sent, lambda msg: callback(sent, msg))))
+                          (user_id, username, bot.register_next_step_handler(sent, callback())))
         db_connection.commit()
 
 
