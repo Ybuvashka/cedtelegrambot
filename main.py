@@ -34,8 +34,8 @@ def start(message):
                          f"Мене створили щоб допомогти тобі відшукати свій розклад.\n"
                          f"Для початку вибери свою роль:",
                          reply_markup=markup)
-
-        role = callback()
+        #bot.register_next_step_handler(sent, callback)
+        role = callback(message)
 
         db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
                           (user_id, username, role))
