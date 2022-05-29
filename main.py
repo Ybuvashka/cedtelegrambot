@@ -35,8 +35,10 @@ def start(message):
                          f"Для початку вибери свою роль:",
                          reply_markup=markup)
 
+        role = callback()
+
         db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                          (user_id, username, bot.register_next_step_handler(sent, callback)))
+                          (user_id, username, role))
         db_connection.commit()
 
 
