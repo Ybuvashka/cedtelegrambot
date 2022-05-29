@@ -23,21 +23,21 @@ def start(message):
     db_object.execute(f"SELECT user_id from users where user_id = {user_id}")
     result = db_object.fetchone()
 
-    if not result:
-        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton(f"Студент")
-        item2 = types.KeyboardButton(f"Викладач")
-        markup.add(item1, item2)
+    #if not result:
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton(f"Студент")
+    item2 = types.KeyboardButton(f"Викладач")
+    markup.add(item1, item2)
 
-        sent = bot.send_message(message.chat.id,
-                                f"Привіт, {username}!\n"
-                                f"Мене створили щоб допомогти тобі відшукати свій розклад.\n"
-                                f"Для початку вибери свою роль:",
-                                reply_markup=markup)
-        db_object.execute(f"DELETE FROM users")
-        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                          (user_id, username, bot.register_next_step_handler(sent, callback(message))))
-        db_connection.commit()
+    sent = bot.send_message(message.chat.id,
+                            f"Привіт, {username}!\n"
+                            f"Мене створили щоб допомогти тобі відшукати свій розклад.\n"
+                            f"Для початку вибери свою роль:",
+                            reply_markup=markup)
+    db_object.execute(f"DELETE FROM users")
+    db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
+                      (user_id, username, bot.register_next_step_handler(sent, callback(message))))
+    db_connection.commit()
 
 
 def callback(message):
