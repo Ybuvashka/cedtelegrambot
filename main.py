@@ -35,16 +35,21 @@ def start(message):
                                 f"Для початку вибери свою роль:",
                                 reply_markup=markup)
 
-        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                          (user_id, username, bot.register_next_step_handler(sent, callback(message))))
-        db_connection.commit()
+        bot.register_next_step_handler(sent, callback)
 
 
 def callback(message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+
     if message.text == "Студент":
-        return "Студент"
+        role = "Студент"
     elif message.text == "Викладач":
-        return "Викладач"
+        role = "Викладач"
+
+    db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
+                      (user_id, username, role))
+    db_connection.commit()
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
