@@ -16,7 +16,7 @@ db_object = db_connection.cursor()
 
 
 @bot.message_handler(commands=["start"])
-def start(message, role=None):
+def start(message):
     user_id = message.from_user.id
     username = message.from_user.username
 
@@ -33,18 +33,21 @@ def start(message, role=None):
                          f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:",
                          reply_markup=markup)
 
-        @bot.callback_query_handler(func=lambda call: True)
+        role = None
+        callback(role)
+        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
+                          (user_id, username, role))
+        db_connection.commit()
+
+
+@bot.callback_query_handler(func=lambda call: True)
         def callback(call):
             if call.message:
                 if call.data == "student":
                     role = "Студент"
                 elif call.data == "teacher":
                     role = "Викладач"
-        return role
-
-        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                          (user_id, username, role))
-        db_connection.commit()
+            return role
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
