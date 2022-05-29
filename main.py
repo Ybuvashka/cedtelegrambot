@@ -16,7 +16,7 @@ db_object = db_connection.cursor()
 
 
 @bot.message_handler(commands=["start"])
-def start(message):
+def start(message, role=None):
     user_id = message.from_user.id
     username = message.from_user.username
 
@@ -24,23 +24,27 @@ def start(message):
     result = db_object.fetchone()
 
     if not result:
-        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",(user_id, username, 0))
+        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton(f"Студент", callback_data="student")
+        item2 = types.KeyboardButton(f"Викладач", callback_data="teacher")
+        markup.add(item1,item2)
+
+        bot.send_message(message.chat.id,
+                         f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:",
+                         reply_markup=markup)
+
+        @bot.callback_query_handler(func=lambda call: True)
+        def callback(call):
+            if call.message:
+                if call.data == "student":
+                    role = "Студент"
+                elif call.data == "teacher":
+                    role = "Викладач"
+        return role
+
+        db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
+                          (user_id, username, role))
         db_connection.commit()
-
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton(f"Студент")
-    item2 = types.KeyboardButton(f"Викладач")
-    markup.add(item1,item2)
-
-    bot.send_message(message.chat.id,
-                     f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:",
-                     reply_markup=markup)
-
-
-@bot.message_handler(content_types=["text"])
-def bot_message(message):
-    if message.text == "Студент":
-        bot.send_message(message.chat.id,"Ага попавсь")
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
