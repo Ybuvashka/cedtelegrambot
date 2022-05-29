@@ -25,8 +25,8 @@ def start(message):
 
     if not result:
         markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton(f"Студент", callback_data="student")
-        item2 = types.KeyboardButton(f"Викладач", callback_data="teacher")
+        item1 = types.KeyboardButton(f"Студент")
+        item2 = types.KeyboardButton(f"Викладач")
         markup.add(item1, item2)
 
         sent = bot.send_message(message.chat.id,
