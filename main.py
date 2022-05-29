@@ -27,27 +27,23 @@ def start(message):
         markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton(f"Студент", callback_data="student")
         item2 = types.KeyboardButton(f"Викладач", callback_data="teacher")
-        markup.add(item1,item2)
+        markup.add(item1, item2)
 
-        bot.send_message(message.chat.id,
+        sent = bot.send_message(message.chat.id,
                          f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:",
                          reply_markup=markup)
 
-        role = None
-        callback(role)
         db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                          (user_id, username, role))
+                          (user_id, username, bot.register_next_step_handler(sent, callback)))
         db_connection.commit()
 
 
-@bot.callback_query_handler(func=lambda call: True)
-        def callback(call):
-            if call.message:
-                if call.data == "student":
-                    role = "Студент"
-                elif call.data == "teacher":
-                    role = "Викладач"
-            return role
+def callback(message):
+    if message.text == "Студент":
+        role = "Студент"
+    elif message.text == "Викладач":
+        role = "Викладач"
+    return role
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
