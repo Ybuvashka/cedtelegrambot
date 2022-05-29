@@ -30,7 +30,9 @@ def start(message):
         markup.add(item1, item2)
 
         sent = bot.send_message(message.chat.id,
-                         f"Привіт, {username}!\nМене створили щоб допомогти тобі відшукати свій розклад.\nДля початку вибери свою роль:",
+                         f"Привіт, {username}!\n"
+                         f"Мене створили щоб допомогти тобі відшукати свій розклад.\n"
+                         f"Для початку вибери свою роль:",
                          reply_markup=markup)
 
         db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
