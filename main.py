@@ -35,15 +35,20 @@ def start(message):
                                 f"Для початку вибери свою роль:",
                                 reply_markup=markup)
 
-        bot.register_next_step_handler(sent, callback)
+        bot.register_next_step_handler(sent, get_role)
 
 
-def callback(message):
+def get_role(message):
     user_id = message.from_user.id
     username = message.from_user.username
 
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+
     if message.text == "Студент":
         role = "Студент"
+        db_object.execute(f"SELECT group_name from groups")
+        groups = types.KeyboardButton(db_object.fetchall())
+        markup.add(groups)
     elif message.text == "Викладач":
         role = "Викладач"
 
