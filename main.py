@@ -77,7 +77,7 @@ def get_group_id(message):
 def get_teacher_id(message):
     db_object.execute(f"SELECT teacher_id from teachers where teacher_name = '{message.text}'")
     teacher_id = db_object.fetchone()
-    db_object.execute(f"UPDATE users SET teacher_id = {teacher_id} WHERE user_id = {message.from_user.id}")
+    db_object.execute(f"UPDATE users SET teacher_id = %s WHERE user_id = %s", (teacher_id, message.from_user.id))
     db_connection.commit()
 
 
