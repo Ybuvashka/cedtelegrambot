@@ -49,6 +49,7 @@ def get_role(message):
         db_object.execute(f"SELECT group_name from groups")
         groups = types.KeyboardButton(db_object.fetchall())
         markup.add(groups)
+        bot.send_message(message.chat.id, f"Сюди дійшло")
     elif message.text == "Викладач":
         role = "Викладач"
 
