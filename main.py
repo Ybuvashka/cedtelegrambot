@@ -70,15 +70,14 @@ def set_role(message):
 def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
     group_id = db_object.fetchone()
-    bot.send_message(message.chat.id,group_id)
-    db_object.execute(f"UPDATE users SET group_id = {group_id}")
+    db_object.execute(f"UPDATE users SET group_id = {group_id} WHERE user_id = {message.from_user.id}")
     db_connection.commit()
 
 
 def get_teacher_id(message):
     db_object.execute(f"SELECT teacher_id from teachers where teacher_name = '{message.text}'")
     teacher_id = db_object.fetchone()
-    db_object.execute(f"UPDATE users SET teacher_id = {teacher_id}")
+    db_object.execute(f"UPDATE users SET teacher_id = {teacher_id} WHERE user_id = {message.from_user.id}")
     db_connection.commit()
 
 
