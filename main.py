@@ -17,10 +17,8 @@ db_object = db_connection.cursor()
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    user_id = message.from_user.id
-    username = message.from_user.username
 
-    db_object.execute(f"SELECT user_id from users where user_id = {user_id}")
+    db_object.execute(f"SELECT user_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchone()
 
     if not result:
@@ -30,18 +28,15 @@ def start(message):
         markup.add(item1, item2)
 
         sent = bot.send_message(message.chat.id,
-                                f"Привіт, {username}!\n"
+                                f"Привіт, {message.from_user.username}!\n"
                                 f"Мене створили щоб допомогти тобі відшукати свій розклад.\n"
                                 f"Для початку вибери свою роль:",
                                 reply_markup=markup)
 
-        bot.register_next_step_handler(sent, get_role)
+        bot.register_next_step_handler(sent, set_role)
 
 
-def get_role(message):
-    user_id = message.from_user.id
-    username = message.from_user.username
-
+def set_role(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     if message.text == "Студент":
@@ -52,13 +47,37 @@ def get_role(message):
         for item in groups:
             markup.add(types.KeyboardButton(item[0]))
 
-        bot.send_message(message.chat.id, "Вкажіть свою групу:", reply_markup=markup)
+        sent = bot.send_message(message.chat.id, "Вкажіть свою групу:", reply_markup=markup)
+        bot.register_next_step_handler(sent, get_group_id)
 
     elif message.text == "Викладач":
         role = "Викладач"
 
+        db_object.execute(f"SELECT teacher_name from teachers order by teacher_name asc")
+        teachers = db_object.fetchall()
+
+        for item in teachers:
+            markup.add(types.KeyboardButton(item[0]))
+
+        sent = bot.send_message(message.chat.id, "Виберіть викладача:", reply_markup=markup)
+        bot.register_next_step_handler(sent, get_teacher_id)
+
     db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
-                      (user_id, username, role))
+                      (message.from_user.id, message.from_user.username, role))
+    db_connection.commit()
+
+
+def get_group_id(message):
+    db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
+    group_id = db_object.fetchone()
+    db_object.execute(f"UPDATE users SET group_id = '{group_id}' ")
+    db_connection.commit()
+
+
+def get_teacher_id(message):
+    db_object.execute(f"SELECT teacher_id from teachers where teacher_name = '{message.text}'")
+    teacher_id = db_object.fetchone()
+    db_object.execute(f"UPDATE users SET teacher_id = '{teacher_id}' ")
     db_connection.commit()
 
 
