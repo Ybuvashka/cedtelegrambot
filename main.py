@@ -70,7 +70,7 @@ def set_role(message):
 def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
     group_id = db_object.fetchone()
-    db_object.execute(f"UPDATE users SET group_id = {group_id} ")
+    db_object.execute(f"UPDATE users SET group_id = {group_id}")
     db_connection.commit()
 
 
