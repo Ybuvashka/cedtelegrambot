@@ -22,7 +22,7 @@ def start(message):
     result = db_object.fetchone()
 
     if not result:
-        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
         item1 = types.KeyboardButton(f"Студент")
         item2 = types.KeyboardButton(f"Викладач")
         markup.add(item1, item2)
@@ -37,7 +37,7 @@ def start(message):
 
 
 def set_role(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
     if message.text == "Студент":
         role = "Студент"
@@ -70,7 +70,7 @@ def set_role(message):
 def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
     group_id = db_object.fetchone()
-    db_object.execute(f"UPDATE users SET group_id = %s WHERE user_id = %s",(group_id, message.from_user.id))
+    db_object.execute(f"UPDATE users SET group_id = %s WHERE user_id = %s", (group_id, message.from_user.id))
     db_connection.commit()
 
 
@@ -79,6 +79,14 @@ def get_teacher_id(message):
     teacher_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET teacher_id = %s WHERE user_id = %s", (teacher_id, message.from_user.id))
     db_connection.commit()
+
+
+@bot.message_handler(commands=["menu"])
+def menu(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    item1 = types.KeyboardButton(f"Розклад")
+    markup.add(item1)
+
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
