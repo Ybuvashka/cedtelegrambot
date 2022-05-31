@@ -37,7 +37,7 @@ def start(message):
 
 
 def set_role(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, input_field_placeholder=None)
 
     if message.text == "Студент":
         role = "Студент"
@@ -83,10 +83,9 @@ def get_teacher_id(message):
 
 @bot.message_handler(commands=["menu"])
 def menu(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, )
     item1 = types.KeyboardButton(f"Розклад")
     markup.add(item1)
-
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
