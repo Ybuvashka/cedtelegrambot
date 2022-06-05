@@ -37,7 +37,7 @@ def start(message):
 
 
 def set_role(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, input_field_placeholder="")
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
     if message.text == "Студент":
         role = "Студент"
@@ -60,7 +60,8 @@ def set_role(message):
             markup.add(types.KeyboardButton(item[0]))
 
         sent = bot.send_message(message.chat.id, "Виберіть викладача:", reply_markup=markup)
-        bot.register_next_step_handler(sent, get_teacher_id)
+        bot.register_next_step_handler(sent, get_teacher_id, markup=telebot.types.ReplyKeyboardRemove())
+
 
     db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
                       (message.from_user.id, message.from_user.username, role))
