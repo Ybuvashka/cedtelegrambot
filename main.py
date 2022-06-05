@@ -47,7 +47,7 @@ def set_role(message):
         for item in groups:
             markup.add(types.KeyboardButton(item[0]))
 
-        sent = bot.send_message(message.chat.id, "Вкажіть свою групу:", reply_markup=markup)
+        sent = bot.send_message(message.chat.id, f"Вкажіть свою групу:", reply_markup=markup)
         bot.register_next_step_handler(sent, get_group_id)
 
     elif message.text == "Викладач":
@@ -59,8 +59,8 @@ def set_role(message):
         for item in teachers:
             markup.add(types.KeyboardButton(item[0]))
 
-        sent = bot.send_message(message.chat.id, "Виберіть викладача:", reply_markup=markup)
-        bot.register_next_step_handler(sent, get_teacher_id, markup=telebot.types.ReplyKeyboardRemove())
+        sent = bot.send_message(message.chat.id, f"Виберіть викладача:", reply_markup=markup)
+        bot.register_next_step_handler(sent, get_teacher_id)
 
     db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
                       (message.from_user.id, message.from_user.username, role))
