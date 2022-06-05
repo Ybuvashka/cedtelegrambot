@@ -60,11 +60,13 @@ def set_role(message):
             markup.add(types.KeyboardButton(item[0]))
 
         sent = bot.send_message(message.chat.id, f"Виберіть викладача:", reply_markup=markup)
-        bot.register_next_step_handler(sent, get_teacher_id, reply_markup=telebot.types.ReplyKeyboardRemove)
+        bot.register_next_step_handler(sent, get_teacher_id)
 
     db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
                       (message.from_user.id, message.from_user.username, role))
     db_connection.commit()
+
+    bot.send_message(message.chat.id, reply_markup=telebot.types.ReplyKeyboardRemove)
 
 
 def get_group_id(message):
