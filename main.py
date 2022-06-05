@@ -66,6 +66,8 @@ def set_role(message):
                       (message.from_user.id, message.from_user.username, role))
     db_connection.commit()
 
+    bot.send_message(message.chat.id, markup=telebot.types.ReplyKeyboardRemove)
+
 
 def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
