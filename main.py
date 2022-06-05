@@ -37,7 +37,7 @@ def start(message):
 
 
 def set_role(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, input_field_placeholder=None)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, input_field_placeholder="")
 
     if message.text == "Студент":
         role = "Студент"
