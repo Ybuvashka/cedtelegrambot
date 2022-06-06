@@ -2,9 +2,11 @@ import os
 import telebot
 import logging
 import psycopg2
+import calendar
 from config import *
 from flask import Flask, request
 from telebot import types
+from datetime import date
 
 bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
@@ -80,6 +82,7 @@ def get_teacher_id(message):
     teacher_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET teacher_id = %s WHERE user_id = %s", (teacher_id, message.from_user.id))
     db_connection.commit()
+    menu(message)
 
 
 @bot.message_handler(commands=["menu"])
@@ -94,20 +97,48 @@ def menu(message):
     markup.add(item1, item2, item3, item4, item5)
 
     sent = bot.send_message(message.chat.id, f"Що вас цікавить?", reply_markup=markup)
-    bot.register_next_step_handler(sent, navigation)
+    bot.register_next_step_handler(sent, menu_check)
 
 
-def navigation(message):
+def menu_check(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+
     if message.text == "Розклад":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+        item1 = types.KeyboardButton(f"Сьогодні")
+        item2 = types.KeyboardButton(f"Завтра")
+        item3 = types.KeyboardButton(f"Цей тиждень")
+        item4 = types.KeyboardButton(f"Назад")
+
+        markup.add(item1, item2, item3, item4)
+
+        sent = bot.send_message(message.chat.id, f"Виберіть один з варіантів:", reply_markup=markup)
+        bot.register_next_step_handler(sent, schedule_menu)
+
     elif message.text == "Профіль":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Поділитись":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Будильник":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Редагувати профіль":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
+
+
+def schedule_menu(message):
+    if message.text == "Сьогодні":
+        today_date = date.today()
+        calendar.day_name[today_date.weekday()]
+
+        db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
+        result = db_object.fetchall()
+        bot.send_message(message.chat.id,result)
+
+    elif message.text == "Завтра":
+        bot.send_message(message.chat.id, f"Якась дія")
+    elif message.text == "Цей тиждень":
+        bot.send_message(message.chat.id, f"Якась дія")
+    elif message.text == "Назад":
+        bot.send_message(message.chat.id, f"Якась дія")
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
