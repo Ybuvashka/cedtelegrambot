@@ -41,7 +41,7 @@ def set_role(message):
 
     if message.text == "Студент":
         role = "Студент"
-        db_object.execute(f"SELECT group_name from groups order by group_name asc")
+        db_object.execute(f"SELECT group_name from groups order by group_name desc")
         groups = db_object.fetchall()
 
         for item in groups:
@@ -66,14 +66,13 @@ def set_role(message):
                       (message.from_user.id, message.from_user.username, role))
     db_connection.commit()
 
-    bot.send_message(message.chat.id, reply_markup=telebot.types.ReplyKeyboardRemove)
-
 
 def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
     group_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET group_id = %s WHERE user_id = %s", (group_id, message.from_user.id))
     db_connection.commit()
+    menu(message)
 
 
 def get_teacher_id(message):
@@ -85,9 +84,30 @@ def get_teacher_id(message):
 
 @bot.message_handler(commands=["menu"])
 def menu(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, )
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item1 = types.KeyboardButton(f"Розклад")
-    markup.add(item1)
+    item2 = types.KeyboardButton(f"Профіль")
+    item3 = types.KeyboardButton(f"Поділитись")
+    item4 = types.KeyboardButton(f"Будильник")
+    item5 = types.KeyboardButton(f"Редагувати профіль")
+
+    markup.add(item1, item2, item3, item4, item5)
+
+    sent = bot.send_message(message.chat.id, f"Що вас цікавить?", reply_markup=markup)
+    bot.register_next_step_handler(sent, navigation)
+
+
+def navigation(message):
+    if message.text == "Розклад":
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+    elif message.text == "Профіль":
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+    elif message.text == "Поділитись":
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+    elif message.text == "Будильник":
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
+    elif message.text == "Редагувати профіль":
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?", )
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
