@@ -125,18 +125,34 @@ def menu_check(message):
 
 
 def schedule_menu(message):
+    db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
+    result = db_object.fetchall()
+
+    for row in result:
+        teacher_id = row[0]
+        group_id = row[1]
+
     if message.text == "Сьогодні":
         today_date = date.today()
 
-        bot.send_message(message.chat.id, calendar.day_name[today_date.weekday()])
-        db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
-        result = db_object.fetchall()
+        if(teacher_id != None):
+            db_object.execute(f"select subjects.subject_number,subjects.subject_name,subjects.subject_audience, groups.group_name from subjects "
+            f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
+            f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
+            f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
+            f"join groups on groups.group_id = groups_subjects.group_id "
+            f"where teachers.teacher_id = {teacher_id} and subjects.subject_weekday = {calendar.day_name[today_date.weekday()]}")
+            result = db_object.fetchall()
 
-        for row in result:
-            teacher_id = row[0]
-            group_id = row[1]
-        bot.send_message(message.chat.id, f"teacher_id = {teacher_id}")
-        bot.send_message(message.chat.id, f"group_id = {group_id}")
+            for row in result:
+                bot.send_message(message.chat.id, f"{row[0]} пара\n"
+                                 f"{row[1]}"
+                                 f"Аудиторія: {row[2]}"
+                                 f"Група: {row[3]}"
+                                 )
+
+        elif (group_id != None):
+            sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
 
     elif message.text == "Завтра":
         bot.send_message(message.chat.id, f"Якась дія")
