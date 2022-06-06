@@ -127,11 +127,11 @@ def menu_check(message):
 def schedule_menu(message):
     if message.text == "Сьогодні":
         today_date = date.today()
-        calendar.day_name[today_date.weekday()]
 
+        bot.send_message(message.chat.id, calendar.day_name[today_date.weekday()])
         db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
         result = db_object.fetchall()
-        bot.send_message(message.chat.id,result)
+        bot.send_message(message.chat.id, result)
 
     elif message.text == "Завтра":
         bot.send_message(message.chat.id, f"Якась дія")
