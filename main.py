@@ -131,7 +131,12 @@ def schedule_menu(message):
         bot.send_message(message.chat.id, calendar.day_name[today_date.weekday()])
         db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
         result = db_object.fetchall()
-        bot.send_message(message.chat.id, result)
+
+        for row in result:
+            teacher_id = row[0]
+            group_id = row[1]
+        bot.send_message(message.chat.id, f"teacher_id = {teacher_id}")
+        bot.send_message(message.chat.id, f"group_id = {group_id}")
 
     elif message.text == "Завтра":
         bot.send_message(message.chat.id, f"Якась дія")
