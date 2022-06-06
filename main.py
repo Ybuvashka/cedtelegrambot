@@ -19,7 +19,6 @@ db_object = db_connection.cursor()
 
 @bot.message_handler(commands=["start"])
 def start(message):
-
     db_object.execute(f"SELECT user_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchone()
 
@@ -135,20 +134,21 @@ def schedule_menu(message):
     if message.text == "Сьогодні":
         today_date = date.today()
 
-        if(teacher_id != None):
-            db_object.execute(f"select subjects.subject_number,subjects.subject_name,subjects.subject_audience, groups.group_name from subjects "
-            f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
-            f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
-            f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
-            f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where teachers.teacher_id = {teacher_id} and subjects.subject_weekday = {calendar.day_name[today_date.weekday()]}")
+        if (teacher_id != None):
+            db_object.execute(
+                f"select subjects.subject_number,subjects.subject_name,subjects.subject_audience, groups.group_name from subjects "
+                f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
+                f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
+                f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
+                f"join groups on groups.group_id = groups_subjects.group_id "
+                f"where teachers.teacher_id = {teacher_id} and subjects.subject_weekday = {calendar.day_name[today_date.weekday()]}")
             result = db_object.fetchall()
 
             for row in result:
                 bot.send_message(message.chat.id, f"{row[0]} пара\n"
-                                 f"{row[1]}"
-                                 f"Аудиторія: {row[2]}"
-                                 f"Група: {row[3]}"
+                                                  f"{row[1]}"
+                                                  f"Аудиторія: {row[2]}"
+                                                  f"Група: {row[3]}"
                                  )
         elif (group_id != None):
             sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
