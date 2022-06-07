@@ -232,7 +232,7 @@ def schedule_menu(message):
 
     elif message.text == "На тиждень":
         if (teacher_id != None):
-            sent = bot.send_message(message.chat.id, week_schedule(message))
+            sent = bot.send_message(message.chat.id, f"{week_schedule(message)}")
             bot.register_next_step_handler(sent, schedule_menu)
         elif (group_id != None):
             sent = bot.send_message(message.chat.id, )
