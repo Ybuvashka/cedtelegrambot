@@ -136,12 +136,12 @@ def schedule_menu(message):
 
         if (teacher_id != None):
             db_object.execute(
-                f"select subjects.subject_number,subjects.subject_name,subjects.subject_audience, groups.group_name from subjects "
+                f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects "
                 f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
                 f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
                 f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
                 f"join groups on groups.group_id = groups_subjects.group_id "
-                f"where teachers.teacher_id = {teacher_id} and subjects.subject_weekday = {calendar.day_name[today_date.weekday()]}")
+                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s", (teacher_id, calendar.day_name[today_date.weekday()]))
             result = db_object.fetchall()
 
             for row in result:
