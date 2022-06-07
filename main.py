@@ -146,12 +146,12 @@ def schedule_menu(message):
             result = db_object.fetchall()
 
             for row in result:
-                bot.send_message(message.chat.id, f"{row[0]} пара\n"
+                sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
                                                   f"{row[1]}\n"
                                                   f"Аудиторія: {row[2]}\n"
                                                   f"Група: {row[3]}"
                                  )
-
+            bot.register_next_step_handler(sent, schedule_menu)
 
         elif (group_id != None):
             sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
