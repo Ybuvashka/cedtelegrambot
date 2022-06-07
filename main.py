@@ -105,7 +105,7 @@ def menu_check(message):
     if message.text == "Розклад":
         item1 = types.KeyboardButton(f"Сьогодні")
         item2 = types.KeyboardButton(f"Завтра")
-        item3 = types.KeyboardButton(f"Цей тиждень")
+        item3 = types.KeyboardButton(f"На тиждень")
         item4 = types.KeyboardButton(f"Назад")
 
         markup.add(item1, item2, item3, item4)
@@ -230,10 +230,47 @@ def schedule_menu(message):
             bot.register_next_step_handler(sent, schedule_menu)
 
 
-    elif message.text == "Цей тиждень":
-        bot.send_message(message.chat.id, f"Якась дія")
+    elif message.text == "На тиждень":
+        if (teacher_id != None):
+            sent = bot.send_message(message.chat.id, week_schedule(message))
+            bot.register_next_step_handler(sent, schedule_menu)
+        elif (group_id != None):
+            sent = bot.send_message(message.chat.id, )
+
     elif message.text == "Назад":
         menu(message)
+
+
+def week_schedule(message):
+    db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
+    result = db_object.fetchall()
+
+    for row in result:
+        teacher_id = row[0]
+        group_id = row[1]
+
+    if (teacher_id != None):
+        db_object.execute(
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects "
+            f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
+            f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
+            f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
+            f"join groups on groups.group_id = groups_subjects.group_id "
+            f"where teachers.teacher_id = %s order by subjects.subject_number asc",
+            (teacher_id)
+        )
+        result = db_object.fetchall()
+
+        if not result:
+            sent = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
+        else:
+            for row in result:
+                sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
+                                                         f"{row[1]}\n"
+                                                         f"Аудиторія: {row[2]}\n"
+                                                         f"Група: {row[3]}"
+                                        )
+
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
