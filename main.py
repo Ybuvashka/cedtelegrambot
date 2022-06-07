@@ -229,7 +229,6 @@ def schedule_menu(message):
                                             )
             bot.register_next_step_handler(sent, schedule_menu)
 
-
     elif message.text == "На тиждень":
         if (teacher_id != None):
             sent = bot.send_message(message.chat.id, f"{week_schedule(message)}")
@@ -245,30 +244,29 @@ def week_schedule(message):
     db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
 
+    sent = ''
+
     for row in result:
         teacher_id = row[0]
         group_id = row[1]
 
     if (teacher_id != None):
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects "
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects, subjects.subject_weekday,"
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where teachers.teacher_id = {teacher_id} order by subjects.subject_number asc"
+            f"where teachers.teacher_id = {teacher_id} order by subjects.subject_number asc and "
         )
         result = db_object.fetchall()
 
         if not result:
-            sent = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
+            sent = 'Цього тижня у вас не має пар'
         else:
             for row in result:
-                sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
-                                                         f"{row[1]}\n"
-                                                         f"Аудиторія: {row[2]}\n"
-                                                         f"Група: {row[3]}"
-                                        )
+                sent += f"{row[0]} пара {row[1]}\n аудиторія: {row[2]}\n група: {row[3]} день тижня: {row[4]}"
+        return sent
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
