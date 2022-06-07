@@ -256,8 +256,7 @@ def week_schedule(message):
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where teachers.teacher_id = %s order by subjects.subject_number asc",
-            (teacher_id)
+            f"where teachers.teacher_id = {teacher_id} order by subjects.subject_number asc"
         )
         result = db_object.fetchall()
 
@@ -270,7 +269,6 @@ def week_schedule(message):
                                                          f"Аудиторія: {row[2]}\n"
                                                          f"Група: {row[3]}"
                                         )
-
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
