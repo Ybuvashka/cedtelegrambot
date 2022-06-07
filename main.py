@@ -100,7 +100,7 @@ def menu(message):
 
 
 def menu_check(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     if message.text == "Розклад":
         item1 = types.KeyboardButton(f"Сьогодні")
@@ -141,13 +141,14 @@ def schedule_menu(message):
                 f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
                 f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
                 f"join groups on groups.group_id = groups_subjects.group_id "
-                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s", (teacher_id, calendar.day_name[today_date.weekday()]))
+                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc", (teacher_id, calendar.day_name[today_date.weekday()])
+            )
             result = db_object.fetchall()
 
             for row in result:
                 bot.send_message(message.chat.id, f"{row[0]} пара\n"
-                                                  f"{row[1]}"
-                                                  f"Аудиторія: {row[2]}"
+                                                  f"{row[1]}\n"
+                                                  f"Аудиторія: {row[2]}\n"
                                                   f"Група: {row[3]}"
                                  )
         elif (group_id != None):
