@@ -151,7 +151,7 @@ def schedule_menu(message):
                                                   f"Аудиторія: {row[2]}\n"
                                                   f"Група: {row[3]}"
                                  )
-            schedule_menu(message)
+
 
         elif (group_id != None):
             sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
