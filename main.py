@@ -6,7 +6,7 @@ import calendar
 from config import *
 from flask import Flask, request
 from telebot import types
-from datetime import date
+from datetime import date, timedelta
 
 bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
@@ -131,9 +131,10 @@ def schedule_menu(message):
         teacher_id = row[0]
         group_id = row[1]
 
-    if message.text == "Сьогодні":
-        today_date = date.today()
+    today_date = date.today()
+    tomorrow_date = date.today() + timedelta(days=1)
 
+    if message.text == "Сьогодні":
         if (teacher_id != None):
             db_object.execute(
                 f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects "
@@ -141,23 +142,49 @@ def schedule_menu(message):
                 f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
                 f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
                 f"join groups on groups.group_id = groups_subjects.group_id "
-                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc", (teacher_id, calendar.day_name[today_date.weekday()])
+                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
+                (teacher_id, calendar.day_name[today_date.weekday()])
             )
             result = db_object.fetchall()
 
-            for row in result:
-                sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
-                                                  f"{row[1]}\n"
-                                                  f"Аудиторія: {row[2]}\n"
-                                                  f"Група: {row[3]}"
-                                 )
+            if not result:
+                sent = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
+            else:
+                for row in result:
+                    sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
+                                                             f"{row[1]}\n"
+                                                             f"Аудиторія: {row[2]}\n"
+                                                             f"Група: {row[3]}"
+                                            )
             bot.register_next_step_handler(sent, schedule_menu)
 
         elif (group_id != None):
             sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
 
     elif message.text == "Завтра":
-        bot.send_message(message.chat.id, f"Якась дія")
+        if (teacher_id != None):
+            db_object.execute(
+                f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects "
+                f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
+                f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
+                f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
+                f"join groups on groups.group_id = groups_subjects.group_id "
+                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
+                (teacher_id, calendar.day_name[tomorrow_date.weekday()])
+            )
+            result = db_object.fetchall()
+
+            if not result:
+                sent = bot.send_message(message.chat.id, f"Завтра у вас не має пар!")
+            else:
+                for row in result:
+                    sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
+                                                             f"{row[1]}\n"
+                                                             f"Аудиторія: {row[2]}\n"
+                                                             f"Група: {row[3]}"
+                                            )
+            bot.register_next_step_handler(sent, schedule_menu)
+
     elif message.text == "Цей тиждень":
         bot.send_message(message.chat.id, f"Якась дія")
     elif message.text == "Назад":
