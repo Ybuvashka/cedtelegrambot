@@ -181,7 +181,6 @@ def schedule_menu(message):
                                             )
             bot.register_next_step_handler(sent, schedule_menu)
 
-
     elif message.text == "Завтра":
         if (teacher_id != None):
             db_object.execute(
