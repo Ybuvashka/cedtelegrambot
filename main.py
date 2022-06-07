@@ -252,7 +252,7 @@ def week_schedule(message):
 
     if (teacher_id != None):
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects, subjects.subject_weekday,"
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects, subjects.subject_weekday "
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
