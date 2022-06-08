@@ -242,7 +242,7 @@ def schedule_menu(message):
 def week_schedule(message):
     db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
-    sent = ""
+    sent = ''
 
     for row in result:
         teacher_id = row[0]
@@ -264,7 +264,7 @@ def week_schedule(message):
         )
         result = db_object.fetchall()
         for row in result:
-            sent += f"{row[0]} пара\n{row[1]()}\nаудиторія: {row[2]}\nгрупа: {row[3]}\n"
+            sent += f'{row[0]} пара\n{row[1]()}\nаудиторія: {row[2]}\nгрупа: {row[3]}\n'
 
     return sent
 
