@@ -260,7 +260,7 @@ def week_schedule(message):
             f"join groups_subjects on s.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
             f"where teachers.teacher_id = %s and  s.subject_weekday = %s"
-            f"order by s.subject_weekday,s.subject_number asc ", (teacher_id, weekdays[i])
+            f"order by s.subject_weekday,s.subject_number asc", (teacher_id, weekdays[i])
         )
         result = db_object.fetchall()
         for row in result:
