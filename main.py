@@ -250,7 +250,7 @@ def week_schedule(message):
 
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-    for i, j in range(len(weekdays)):
+    for i, j in enumerate(range(len(weekdays)-1)):
         sent += f"{weekdays[j]}\n"
         db_object.execute(
             f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name "
