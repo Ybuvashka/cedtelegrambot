@@ -242,31 +242,31 @@ def schedule_menu(message):
 def week_schedule(message):
     db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
-
-    sent = ''
+    sent = ""
 
     for row in result:
         teacher_id = row[0]
         group_id = row[1]
 
-    if (teacher_id != None):
+    weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+    for i in range(len(weekdays)-1):
+        sent += f"{weekdays[i]}\n"
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name, subjects.subject_weekday from subjects "
-            f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name "
+            f"from subjects s "
+            f"join teachers_subjects on s.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
-            f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
+            f"join groups_subjects on s.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where teachers.teacher_id = {teacher_id} "
-            f"order by subjects.subject_weekday,subjects.subject_number asc "
+            f"where teachers.teacher_id = %s and  s.subject_weekday = %s"
+            f"order by s.subject_weekday,s.subject_number asc ", (teacher_id, weekdays[i])
         )
         result = db_object.fetchall()
+        for row in result:
+            sent += f"{row[0]} пара\n{row[1]()}\nаудиторія: {row[2]}\nгрупа: {row[3]}\n"
 
-        if not result:
-            sent = 'Цього тижня у вас не має пар'
-        else:
-            for row in result:
-                sent += f"{row[0]} пара\n{row[1].strip()}\nаудиторія: {row[2].strip()}\nгрупа: {row[3].strip()}\nдень тижня: {row[4].strip()}\n"
-        return sent
+    return sent
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
