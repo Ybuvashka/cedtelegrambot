@@ -263,8 +263,10 @@ def week_schedule(message):
             f"order by subjects.subject_weekday,subjects.subject_number asc ", (teacher_id, weekdays[i])
         )
         result = db_object.fetchall()
-        for row in result:
-            sent += f'{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n'
+
+        if result:
+            for row in result:
+                sent += f'{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n'
 
     return sent
 
