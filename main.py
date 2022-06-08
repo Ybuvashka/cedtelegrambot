@@ -264,7 +264,7 @@ def week_schedule(message):
         )
         result = db_object.fetchall()
         for row in result:
-            sent += f'{row[0]} пара\n{row[1]()}\nаудиторія: {row[2]}\nгрупа: {row[3]}\n'
+            sent += f'{row[0]} пара \n{row[1]()}\n аудиторія: {row[2]}\n група: {row[3]}\n'
         j += 1
 
     return sent
