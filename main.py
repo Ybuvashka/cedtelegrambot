@@ -265,7 +265,7 @@ def week_schedule(message):
             sent = 'Цього тижня у вас не має пар'
         else:
             for row in result:
-                sent += f"{row[0]} пара\n{row[1]}\nаудиторія: {row[2]}\nгрупа: {row[3]}\nдень тижня: {row[4]}\n"
+                sent += f"{row[0].strip()} пара\n{row[1].strip()}\nаудиторія: {row[2].strip()}\nгрупа: {row[3].strip()}\nдень тижня: {row[4].strip()}\n"
         return sent
 
 
