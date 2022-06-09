@@ -150,9 +150,6 @@ def get_fk_id(message):
 def today(message):
     first_param, second_param, fk_id = get_fk_id(message)
     sent = ''
-    print("first ",first_param)
-    print("sec ",second_param)
-    print("fk ",fk_id)
 
     db_object.execute(
         f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, %s from subjects "
@@ -170,7 +167,7 @@ def today(message):
         message = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
     else:
         for row in result:
-            sent += f"{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n"
+            sent += f'{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n'
         message = bot.send_message(message.chat.id, sent)
 
     bot.register_next_step_handler(message, schedule_check)
