@@ -144,9 +144,9 @@ def get_fk_id(message):
         bot.send_message(564225964, f"Помилка в зовнішніх ключах {message.from_user.id}")
         menu(message)
     elif teacher_id != None:
-        user_fk = teacher_id
-    else:
         user_fk = group_id
+    else:
+        user_fk = teacher_id
 
     return teacher_group_name, user_fk
 
@@ -156,6 +156,8 @@ def schedule_check(message):
 
     today_date = date.today()
     tomorrow_date = date.today() + timedelta(days=1)
+
+    sent = ''
 
     if message.text == "Сьогодні":
         db_object.execute(
@@ -173,7 +175,7 @@ def schedule_check(message):
             sent = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
         else:
             for row in result:
-                sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
+                sent += bot.send_message(message.chat.id, f"{row[0]} пара\n"
                                                          f"{row[1]}\n"
                                                          f"Аудиторія: {row[2]}\n"
                                                          f"{row[3]}"
