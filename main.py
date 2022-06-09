@@ -147,8 +147,26 @@ def get_fk_id(message):
 
 
 @bot.message_handler(commands=["today"])
-def today(message):
-    first_param, second_param, fk_id = get_fk_id(message)
+def today(message, day):
+    db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
+    result = db_object.fetchall()
+
+    for row in result:
+        user_role = row[0]
+        teacher_id = row[1]
+        group_id = row[2]
+
+    if user_role == "Студент":
+        first_param = f"teachers.teacher_name"
+        second_param = f"groups.group_id"
+        fk_id = group_id
+
+
+    else:
+        first_param = f"groups.group_name"
+        second_param = f"teachers.teacher_id"
+        fk_id = teacher_id
+
     sent = ''
 
     db_object.execute(
@@ -158,10 +176,9 @@ def today(message):
         f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
         f"join groups on groups.group_id = groups_subjects.group_id "
         f"where {second_param} = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
-        ( fk_id, calendar.day_name[date.today().weekday()])
+        (fk_id, day)
     )
     result = db_object.fetchall()
-    print("res ", result)
 
     if not result:
         message = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
@@ -174,11 +191,11 @@ def today(message):
 
 
 def schedule_check(message):
-
+    day_today = calendar.day_name[date.today().weekday()]
     tomorrow_date = date.today() + timedelta(days=1)
 
     if message.text == "Сьогодні":
-        today(message)
+        today(message, day_today)
 
     elif message.text == "Завтра":
             db_object.execute(
