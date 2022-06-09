@@ -156,11 +156,11 @@ def today(message, day):
         teacher_id = row[1]
         group_id = row[2]
 
-    if user_role == "Студент":
+    if "Студент" in user_role:
         first_param = f"teachers.teacher_name"
         second_param = f"groups.group_id"
         fk_id = group_id
-    elif user_role == "Викладач":
+    elif "Викладач" in user_role:
         first_param = f"groups.group_name"
         second_param = f"teachers.teacher_id"
         fk_id = teacher_id
