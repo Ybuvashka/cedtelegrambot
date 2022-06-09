@@ -152,9 +152,6 @@ def get_fk_id(message):
 @bot.message_handler(commands=["today"])
 def today(message):
     first_param, second_param, fk_id = get_fk_id(message)
-    bot.send_message(message.chat.id, first_param)
-    bot.send_message(message.chat.id, second_param)
-    bot.send_message(message.chat.id, fk_id)
     sent = ''
 
     db_object.execute(
