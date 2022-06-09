@@ -160,7 +160,7 @@ def schedule_check(message):
     sent = ''
 
     if message.text == "Сьогодні":
-        db_object.execute(
+        bot.send_message(message.chat.id, db_object.execute(
             f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {teacher_group}_name from subjects "
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
@@ -168,7 +168,8 @@ def schedule_check(message):
             f"join groups on groups.group_id = groups_subjects.group_id "
             f"where {teacher_group}_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
             (user_fk, calendar.day_name[today_date.weekday()])
-        )
+        ))
+
         result = db_object.fetchall()
 
         if not result:
