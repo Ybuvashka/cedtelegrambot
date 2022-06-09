@@ -131,13 +131,13 @@ def schedule_check(message):
 
     if message.text == "Сьогодні":
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, %s from subjects "
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {teacher_group_name} from subjects "
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
             f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
-            (teacher_group_name, user_fk, calendar.day_name[today_date.weekday()])
+            (user_fk, calendar.day_name[today_date.weekday()])
         )
         result = db_object.fetchall()
 
@@ -210,6 +210,7 @@ def get_fk_id(message):
         user_fk = f"teachers.teacher_name"
 
     return teacher_group_name, user_fk
+
 
 @bot.message_handler(commands=["week"])
 def week_schedule(message):
