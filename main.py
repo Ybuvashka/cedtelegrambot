@@ -178,7 +178,7 @@ def schedule_check(message):
             for row in result:
                 sent += f"{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}"
 
-        message = message.send_message(message.chat.id, sent )
+        message = bot.send_message(message.chat.id, sent )
 
         bot.register_next_step_handler(message, schedule_check)
 
