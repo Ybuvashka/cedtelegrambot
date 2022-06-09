@@ -160,10 +160,12 @@ def today(message, day):
         first_param = f"teachers.teacher_name"
         second_param = f"groups.group_id"
         fk_id = group_id
-    else:
+    elif user_role == "Викладач":
         first_param = f"groups.group_name"
         second_param = f"teachers.teacher_id"
         fk_id = teacher_id
+    else:
+        bot.send_message(message.chat.id, "Парапапапапа")
 
     sent = ''
 
