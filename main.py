@@ -131,8 +131,11 @@ def get_fk_id(message):
 
     for row in result:
         user_role = row[0]
+        bot.send_message(message.chat.id,user_role)
         teacher_id = row[1]
+        bot.send_message(message.chat.id, teacher_id)
         group_id = row[2]
+        bot.send_message(message.chat.id, group_id)
 
     if user_role == "Студент":
         first_param = f"teachers.teacher_name"
@@ -149,6 +152,9 @@ def get_fk_id(message):
 @bot.message_handler(commands=["today"])
 def today(message):
     first_param, second_param, fk_id = get_fk_id(message)
+    bot.send_message(message.chat.id, first_param)
+    bot.send_message(message.chat.id, second_param)
+    bot.send_message(message.chat.id, fk_id)
     sent = ''
 
     db_object.execute(
