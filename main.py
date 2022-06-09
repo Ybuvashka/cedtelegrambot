@@ -123,21 +123,47 @@ def menu_check(message):
         sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
 
 
+def get_fk_id(message):
+    db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
+    result = db_object.fetchall()
+
+    for row in result:
+        user_role = row[0]
+        teacher_id = row[1]
+        group_id = row[2]
+
+    if user_role == "Студент":
+        teacher_group_name = f"teachers.teacher"
+    else:
+        teacher_group_name = f"groups.group"
+
+    if (teacher_id == None and group_id == None) or (teacher_id != None and group_id != None):
+        bot.send_message(message.chat.id, f"Виникла помилка, спробуйте пізніше")
+        bot.send_message(564225964, f"Помилка в зовнішніх ключах {message.from_user.id}")
+        menu(message)
+    elif teacher_id != None:
+        user_fk = teacher_id
+    else:
+        user_fk = group_id
+
+    return teacher_group_name, user_fk
+
+
 def schedule_check(message):
-    teacher_group_name, user_fk = get_fk_id(message)
+    teacher_group, user_fk = get_fk_id(message)
 
     today_date = date.today()
     tomorrow_date = date.today() + timedelta(days=1)
 
     if message.text == "Сьогодні":
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, %s from subjects "
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {teacher_group}_name from subjects "
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
-            (teacher_group_name, user_fk, calendar.day_name[today_date.weekday()])
+            f"where {teacher_group}_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
+            (user_fk, calendar.day_name[today_date.weekday()])
         )
         result = db_object.fetchall()
 
@@ -184,32 +210,6 @@ def schedule_check(message):
 
     elif message.text == "Назад":
         menu(message)
-
-
-def get_fk_id(message):
-    db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
-    result = db_object.fetchall()
-
-    for row in result:
-        user_role = row[0]
-        teacher_id = row[1]
-        group_id = row[2]
-
-    if user_role == "Студент":
-        teacher_group_name = f"teachers.teacher_name"
-    else:
-        teacher_group_name = f"groups.group_name"
-
-    if (teacher_id == None and group_id == None) or (teacher_id != None and group_id != None):
-        bot.send_message(message.chat.id, f"Виникла помилка, спробуйте пізніше")
-        bot.send_message(564225964, f"Помилка в зовнішніх ключах {message.from_user.id}")
-        menu(message)
-    elif teacher_id != None:
-        user_fk = teacher_id
-    else:
-        user_fk = group_id
-
-    return teacher_group_name, user_fk
 
 
 @bot.message_handler(commands=["week"])
