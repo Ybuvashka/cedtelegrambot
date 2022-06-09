@@ -135,13 +135,13 @@ def get_fk_id(message):
         group_id = row[2]
 
     if user_role == "Студент":
-        first_param = f"teachers.teacher"
-        second_param = f"groups.group"
+        first_param = f"teachers.teacher_name"
+        second_param = f"groups.group_id"
 
         return first_param, second_param, group_id
     else:
-        first_param = f"groups.group"
-        second_param = f"teachers.teacher"
+        first_param = f"groups.group_name"
+        second_param = f"teachers.teacher_id"
 
         return first_param, second_param, teacher_id
 
@@ -152,13 +152,13 @@ def today(message):
     sent = ''
 
     db_object.execute(
-        f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {first_param}_name from subjects "
+        f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, %s from subjects "
         f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
         f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
         f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
         f"join groups on groups.group_id = groups_subjects.group_id "
-        f"where {second_param}_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
-        (fk_id, calendar.day_name[date.today().weekday()])
+        f"where %s = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
+        (first_param, second_param, fk_id, calendar.day_name[date.today().weekday()])
     )
     result = db_object.fetchall()
 
