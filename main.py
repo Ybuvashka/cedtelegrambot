@@ -131,7 +131,7 @@ def get_fk_id(message):
 
     for row in result:
         user_role = row[0]
-        bot.send_message(message.chat.id,user_role)
+        bot.send_message(message.chat.id, user_role)
         teacher_id = row[1]
         bot.send_message(message.chat.id, teacher_id)
         group_id = row[2]
