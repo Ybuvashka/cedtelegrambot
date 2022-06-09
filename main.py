@@ -174,7 +174,7 @@ def today(message, day):
         f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
         f"join groups on groups.group_id = groups_subjects.group_id "
         f"where groups.group_id = group_id and subjects.subject_weekday =%s order by subjects.subject_number asc",
-        (fk_id, day)
+        (day)
     )
     result = db_object.fetchall()
 
