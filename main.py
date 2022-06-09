@@ -120,7 +120,9 @@ def menu_check(message):
     elif message.text == "Будильник":
         sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Редагувати профіль":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
+        db_object.execute(f"delete from users where user_id = {message.from_user.id}")
+        db_connection.commit()
+        start(message)
 
 
 def get_fk_id(message):
