@@ -175,11 +175,7 @@ def schedule_check(message):
             sent = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
         else:
             for row in result:
-                sent += bot.send_message(message.chat.id, f"{row[0]} пара\n"
-                                                         f"{row[1]}\n"
-                                                         f"Аудиторія: {row[2]}\n"
-                                                         f"{row[3]}"
-                                        )
+                sent += f"{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}"
         bot.register_next_step_handler(sent, schedule_check)
 
     elif message.text == "Завтра":
