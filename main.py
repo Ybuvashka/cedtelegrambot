@@ -131,13 +131,13 @@ def schedule_check(message):
 
     if message.text == "Сьогодні":
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {teacher_group_name} from subjects "
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, %s from subjects "
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
             f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
-            (user_fk, calendar.day_name[today_date.weekday()])
+            (teacher_group_name, user_fk, calendar.day_name[today_date.weekday()])
         )
         result = db_object.fetchall()
 
@@ -205,9 +205,9 @@ def get_fk_id(message):
         bot.send_message(564225964, f"Помилка в зовнішніх ключах {message.from_user.id}")
         menu(message)
     elif teacher_id != None:
-        user_fk = f"groups.group_name"
+        user_fk = teacher_id
     else:
-        user_fk = f"teachers.teacher_name"
+        user_fk = group_id
 
     return teacher_group_name, user_fk
 
