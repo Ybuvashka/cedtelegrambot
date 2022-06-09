@@ -173,11 +173,14 @@ def schedule_check(message):
         result = db_object.fetchall()
 
         if not result:
-            sent = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
+            message = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
         else:
             for row in result:
                 sent += f"{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}"
-        bot.register_next_step_handler(sent, schedule_check)
+
+        message = message.send_message(message.chat.id, sent )
+
+        bot.register_next_step_handler(message, schedule_check)
 
     elif message.text == "Завтра":
             db_object.execute(
@@ -200,6 +203,7 @@ def schedule_check(message):
                                                              f"Аудиторія: {row[2]}\n"
                                                              f"Група: {row[3]}"
                                             )
+
             bot.register_next_step_handler(sent, schedule_check)
 
     elif message.text == "На тиждень":
