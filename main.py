@@ -239,15 +239,28 @@ def schedule_menu(message):
         menu(message)
 
 
-def week_schedule(message):
+def get_fk_id(message):
     db_object.execute(f"SELECT teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
-    sent = ''
 
     for row in result:
         teacher_id = row[0]
         group_id = row[1]
 
+    if (teacher_id == None and group_id == None) or (teacher_id != None and group_id != None):
+        bot.send_message(message.chat.id, f"Виникла помилка, спробуйте пізніше")
+        menu(message)
+    elif teacher_id != None:
+        return teacher_id
+
+    else:
+        return group_id
+
+
+def week_schedule(message):
+    user_fk_id = get_fk_id(message)
+
+    sent = ''
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
     for i, j in enumerate(range(len(weekdays)-1)):
@@ -259,14 +272,14 @@ def week_schedule(message):
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
             f"where teachers.teacher_id = %s and  subjects.subject_weekday = %s"
-            f"order by subjects.subject_weekday,subjects.subject_number asc ", (teacher_id, weekdays[i])
+            f"order by subjects.subject_weekday,subjects.subject_number asc ", (user_fk_id, weekdays[i])
         )
         result = db_object.fetchall()
 
         if result:
-            sent += f"{weekdays[j]}\n"
+            sent += f"\n*{weekdays[j]}*\n"
             for row in result:
-                sent += f'{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n\n'
+                sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n\n"
 
     return sent
 
