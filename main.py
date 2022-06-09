@@ -160,8 +160,6 @@ def today(message, day):
         first_param = f"teachers.teacher_name"
         second_param = f"groups.group_id"
         fk_id = group_id
-
-
     else:
         first_param = f"groups.group_name"
         second_param = f"teachers.teacher_id"
