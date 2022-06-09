@@ -168,13 +168,13 @@ def today(message, day):
     sent = ''
 
     db_object.execute(
-        f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, teachers.teacher_name from subjects "
+        f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, teachers.teacher_name "
+        f"from subjects "
         f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
         f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
         f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
         f"join groups on groups.group_id = groups_subjects.group_id "
-        f"where groups.group_id = group_id and subjects.subject_weekday =%s order by subjects.subject_number asc",
-        (day)
+        f"where groups.group_id = group_id and subjects.subject_weekday ={day} order by subjects.subject_number asc"
     )
     result = db_object.fetchall()
 
