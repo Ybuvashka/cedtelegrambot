@@ -118,9 +118,9 @@ def menu_check(message):
     elif message.text == "Профіль":
         bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Поділитись":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
+        bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Будильник":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
+        bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Редагувати профіль":
         db_object.execute(f"delete from users where user_id = {message.from_user.id}")
         db_connection.commit()
