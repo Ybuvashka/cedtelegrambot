@@ -125,47 +125,26 @@ def menu_check(message):
         start(message)
 
 
-def get_fk_id(message):
-    db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
-    result = db_object.fetchall()
+def schedule_check(message):
 
-    for row in result:
-        user_role = row[0]
-        teacher_id = row[1]
-        group_id = row[2]
+    if message.text == "Сьогодні":
+        day_today = calendar.day_name[date.today().weekday()]
+        today(message, day_today)
 
-    if user_role == "Студент":
-        first_param = f"teachers.teacher_name"
-        second_param = f"groups.group_id"
+    elif message.text == "Завтра":
+        tomorrow_day = date.today() + timedelta(days=1)
+        tomorrow(message, tomorrow_day)
 
-        return first_param, second_param, group_id
-    else:
-        first_param = f"groups.group_name"
-        second_param = f"teachers.teacher_id"
+    elif message.text == "На тиждень":
+        week(message)
 
-        return first_param, second_param, teacher_id
+    elif message.text == "Назад":
+        menu(message)
 
 
 @bot.message_handler(commands=["today"])
 def today(message, day):
-    db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
-    result = db_object.fetchall()
-
-    for row in result:
-        user_role = row[0]
-        teacher_id = row[1]
-        group_id = row[2]
-
-    if "Студент" in user_role:
-        first_param = f"teachers.teacher_name"
-        second_param = f"groups.group_id"
-        fk_id = group_id
-    elif "Викладач" in user_role:
-        first_param = f"groups.group_name"
-        second_param = f"teachers.teacher_id"
-        fk_id = teacher_id
-    else:
-        bot.send_message(message.chat.id, "Парапапапапа")
+    first_param, second_param, fk_id = check_user_fk()
 
     sent = ''
 
@@ -190,65 +169,51 @@ def today(message, day):
     bot.register_next_step_handler(message, schedule_check)
 
 
-def schedule_check(message):
-    day_today = calendar.day_name[date.today().weekday()]
-    tomorrow_date = date.today() + timedelta(days=1)
+def check_user_fk(message):
+    db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
+    result = db_object.fetchall()
 
-    if message.text == "Сьогодні":
-        today(message, day_today)
+    for row in result:
+        user_role = row[0]
+        teacher_id = row[1]
+        group_id = row[2]
 
-    elif message.text == "Завтра":
-            db_object.execute(
-                f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name from subjects "
-                f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
-                f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
-                f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
-                f"join groups on groups.group_id = groups_subjects.group_id "
-                f"where teachers.teacher_id = %s and subjects.subject_weekday =%s order by subjects.subject_number asc",
-                (user_fk, calendar.day_name[tomorrow_date.weekday()])
-            )
-            result = db_object.fetchall()
+    if "Студент" in user_role:
+        first_param = f"teachers.teacher_name"
+        second_param = f"groups.group_id"
+        fk_id = group_id
+    elif "Викладач" in user_role:
+        first_param = f"groups.group_name"
+        second_param = f"teachers.teacher_id"
+        fk_id = teacher_id
+    else:
+        bot.send_message(message.chat.id, "Не визначена роль")
 
-            if not result:
-                sent = bot.send_message(message.chat.id, f"Завтра у вас не має пар!")
-            else:
-                for row in result:
-                    sent = bot.send_message(message.chat.id, f"{row[0]} пара\n"
-                                                             f"{row[1]}\n"
-                                                             f"Аудиторія: {row[2]}\n"
-                                                             f"Група: {row[3]}"
-                                            )
+    return first_param, second_param, fk_id
 
-            bot.register_next_step_handler(sent, schedule_check)
 
-    elif message.text == "На тиждень":
-        if (user_fk != None):
-            sent = bot.send_message(message.chat.id, f"{week_schedule(message)}", parse_mode="Markdown")
-            bot.register_next_step_handler(sent, schedule_check)
-        elif (user_fk != None):
-            sent = bot.send_message(message.chat.id, )
-
-    elif message.text == "Назад":
-        menu(message)
+@bot.message_handler(commands=["tomorrow"])
+def tomorrow(message, tomorrow_day):
+    today(message, tomorrow_day)
 
 
 @bot.message_handler(commands=["week"])
-def week_schedule(message):
-    user_fk_id = get_fk_id(message)
+def week(message):
+    first_param, second_param, fk_id = check_user_fk()
 
     sent = ''
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
     for i, j in enumerate(range(len(weekdays) - 1)):
         db_object.execute(
-            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, groups.group_name "
+            f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {first_param} "
             f"from subjects "
             f"join teachers_subjects on subjects.subject_id = teachers_subjects.subject_id "
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where teachers.teacher_id = %s and  subjects.subject_weekday = %s"
-            f"order by subjects.subject_weekday,subjects.subject_number asc ", (user_fk_id, weekdays[i])
+            f"where {second_param} = {fk_id} and  subjects.subject_weekday = {weekdays[i]}"
+            f"order by subjects.subject_weekday,subjects.subject_number asc "
         )
         result = db_object.fetchall()
 
@@ -257,7 +222,7 @@ def week_schedule(message):
             for row in result:
                 sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n\n"
 
-    return sent
+    bot.send_message(message.chat.id, sent)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
