@@ -35,6 +35,8 @@ def start(message):
                                 reply_markup=markup)
 
         bot.register_next_step_handler(sent, set_role)
+    else:
+        menu(message)
 
 
 def set_role(message):
@@ -114,9 +116,9 @@ def menu_check(message):
         bot.register_next_step_handler(sent, schedule_check)
 
     elif message.text == "Профіль":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
+        bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Поділитись":
-        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
+        link(message)
     elif message.text == "Будильник":
         sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Редагувати профіль":
@@ -221,11 +223,20 @@ def week(message):
         if result:
             sent += f"\n{weekdays[j]}\n"
             for row in result:
-                sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n\n"
+                sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n{row[3]}\n\n"
 
     message = bot.send_message(message.chat.id, sent)
 
     bot.register_next_step_handler(message, schedule_check)
+
+
+@bot.message_handler(commands=["link"])
+def link(message):
+    result = 'https://t.me/ced_tgbot'
+    logging.root.clipboard_clear()
+    logging.root.clipboard_append(result)
+    bot.send_message(message.chat.id, "Посилання завантажено в буфер обміну")
+    menu(message)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
