@@ -3,7 +3,6 @@ import telebot
 import logging
 import psycopg2
 import calendar
-import tkinter
 from config import *
 from flask import Flask, request
 from telebot import types
@@ -13,7 +12,6 @@ bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
 logger = telebot.logger
 logger.setLevel(logging.DEBUG)
-root = tkinter.Tk()
 
 db_connection = psycopg2.connect(DB_URI, sslmode="require")
 db_object = db_connection.cursor()
@@ -120,7 +118,7 @@ def menu_check(message):
     elif message.text == "Профіль":
         bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Поділитись":
-        link(message)
+        sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Будильник":
         sent = bot.send_message(message.chat.id, f"Що вас цікавить?")
     elif message.text == "Редагувати профіль":
@@ -230,14 +228,6 @@ def week(message):
     message = bot.send_message(message.chat.id, sent)
 
     bot.register_next_step_handler(message, schedule_check)
-
-
-@bot.message_handler(commands=["link"])
-def link(message):
-    root.clipboard_clear()
-    root.clipboard_append('https://t.me/ced_tgbot')
-    bot.send_message(message.chat.id, "Посилання завантажено в буфер обміну")
-    menu(message)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
