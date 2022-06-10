@@ -160,7 +160,7 @@ def today(message, day):
     result = db_object.fetchall()
 
     if not result:
-        message = bot.send_message(message.chat.id, f"Сьогодні у вас не має пар!")
+        message = bot.send_message(message.chat.id, f"Не має пар!")
     else:
         for row in result:
             sent += f'{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n'
@@ -213,7 +213,7 @@ def week(message):
             f"join teachers on teachers.teacher_id = teachers_subjects.teacher_id "
             f"join groups_subjects on subjects.subject_id = groups_subjects.subject_id "
             f"join groups on groups.group_id = groups_subjects.group_id "
-            f"where {second_param} = {fk_id} and  subjects.subject_weekday = {weekdays[i]}"
+            f"where {second_param} = {fk_id} and  subjects.subject_weekday = {weekdays[i]} "
             f"order by subjects.subject_weekday,subjects.subject_number asc "
         )
         result = db_object.fetchall()
