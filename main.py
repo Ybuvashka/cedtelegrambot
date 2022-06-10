@@ -144,7 +144,7 @@ def schedule_check(message):
 
 @bot.message_handler(commands=["today"])
 def today(message, day):
-    first_param, second_param, fk_id = check_user_fk()
+    first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
 
@@ -187,7 +187,8 @@ def check_user_fk(message):
         second_param = f"teachers.teacher_id"
         fk_id = teacher_id
     else:
-        bot.send_message(message.chat.id, "Не визначена роль")
+        bot.send_message(564225964, "Не визначена роль")
+        schedule_check(message)
 
     return first_param, second_param, fk_id
 
@@ -199,7 +200,7 @@ def tomorrow(message, tomorrow_day):
 
 @bot.message_handler(commands=["week"])
 def week(message):
-    first_param, second_param, fk_id = check_user_fk()
+    first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
