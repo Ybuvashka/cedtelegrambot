@@ -7,11 +7,13 @@ from config import *
 from flask import Flask, request
 from telebot import types
 from datetime import date, timedelta
+from tkinter import *
 
 bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
 logger = telebot.logger
 logger.setLevel(logging.DEBUG)
+root = Tk()
 
 db_connection = psycopg2.connect(DB_URI, sslmode="require")
 db_object = db_connection.cursor()
@@ -232,9 +234,8 @@ def week(message):
 
 @bot.message_handler(commands=["link"])
 def link(message):
-    result = 'https://t.me/ced_tgbot'
-    logging.root.clipboard_clear()
-    logging.root.clipboard_append(result)
+    root.clipboard_clear()
+    root.clipboard_append('https://t.me/ced_tgbot')
     bot.send_message(message.chat.id, "Посилання завантажено в буфер обміну")
     menu(message)
 
