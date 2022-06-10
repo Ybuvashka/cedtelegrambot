@@ -3,17 +3,17 @@ import telebot
 import logging
 import psycopg2
 import calendar
+import tkinter
 from config import *
 from flask import Flask, request
 from telebot import types
 from datetime import date, timedelta
-from tkinter import *
 
 bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
 logger = telebot.logger
 logger.setLevel(logging.DEBUG)
-root = Tk()
+root = tkinter.Tk()
 
 db_connection = psycopg2.connect(DB_URI, sslmode="require")
 db_object = db_connection.cursor()
