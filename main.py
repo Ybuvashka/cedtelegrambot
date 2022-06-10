@@ -191,7 +191,7 @@ def check_user_fk(message):
         second_param = f"teachers.teacher_id"
         fk_id = teacher_id
     else:
-        bot.send_message(564225964, "Не визначена роль")
+        bot.send_message(564225964, "Не визначена роль ")
         schedule_check(message)
 
     return first_param, second_param, fk_id
