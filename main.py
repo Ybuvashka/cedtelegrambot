@@ -224,6 +224,7 @@ def week(message):
                 sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n група: {row[3]}\n\n"
 
     bot.send_message(message.chat.id, sent)
+    schedule_check(message)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
