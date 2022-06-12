@@ -165,9 +165,9 @@ def today(message, day):
     else:
         for row in result:
             sent += f'{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n'
-        bot.send_message(message.chat.id, sent)
+        line = bot.send_message(message.chat.id, sent)
 
-    schedule_check(message)
+    bot.register_next_step_handler(line, schedule_check)
 
 
 def check_user_fk(message):
@@ -224,9 +224,9 @@ def week(message):
             for row in result:
                 sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n{row[3]}\n\n"
 
-    bot.send_message(message.chat.id, sent)
+    line = bot.send_message(message.chat.id, sent)
 
-    schedule_check(message)
+    bot.register_next_step_handler(line, schedule_check)
 
 
 @bot.message_handler(commands=["profile"])
