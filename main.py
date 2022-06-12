@@ -116,7 +116,7 @@ async def menu_check(message):
         bot.register_next_step_handler(sent, schedule_check)
 
     elif message.text == "Профіль":
-        menu(message)
+        profile(message)
     elif message.text == "Поділитись":
         menu(message)
     elif message.text == "Будильник":
