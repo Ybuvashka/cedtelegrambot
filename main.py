@@ -237,13 +237,13 @@ def profile(message):
         group_id = item[0]
         teacher_id = item[1]
     sent = ''
-    if group_id != 'null':
+    if group_id is not None:
         db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name "
                           f"from users "
                           f"join groups on groups.group_id = users.group_id "
                           f"where users.group_id = {group_id}")
         result = db_object.fetchall()
-    elif teacher_id != 'null':
+    elif teacher_id is not None:
         db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, teachers.teacher_name "
                           f"from users "
                           f"join teachers on teachers.teacher_id = users.teacher_id "
