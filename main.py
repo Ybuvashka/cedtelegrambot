@@ -167,7 +167,7 @@ def today(message, day):
             sent += f'{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n'
         message = bot.send_message(message.chat.id, sent)
 
-    bot.register_next_step_handler(message, schedule_check)
+    schedule_check(message)
 
 
 def check_user_fk(message):
@@ -226,7 +226,7 @@ def week(message):
 
     message = bot.send_message(message.chat.id, sent)
 
-    bot.register_next_step_handler(message, schedule_check)
+    schedule_check(message)
 
 
 @bot.message_handler(commands=["profile"])
@@ -238,12 +238,14 @@ def profile(message):
         teacher_id = item[1]
     sent = ''
     if group_id != 'null':
-        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name from users "
+        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name "
+                          f"from users "
                           f"join groups on groups.group_id = users.group_id "
                           f"where users.group_id = {group_id}")
         result = db_object.fetchall()
     elif teacher_id != 'null':
-        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, teachers.teacher_name from users "
+        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, teachers.teacher_name "
+                          f"from users "
                           f"join teachers on teachers.teacher_id = users.teacher_id "
                           f"where users.teacher_id = {teacher_id}")
         result = db_object.fetchall()
