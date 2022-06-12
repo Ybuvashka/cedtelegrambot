@@ -18,7 +18,7 @@ db_object = db_connection.cursor()
 
 
 @bot.message_handler(commands=["start"])
-def start(message):
+async def start(message):
     db_object.execute(f"SELECT user_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchone()
 
@@ -39,7 +39,7 @@ def start(message):
         menu(message)
 
 
-def set_role(message):
+async def set_role(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
     if message.text == "Студент":
@@ -70,7 +70,7 @@ def set_role(message):
     db_connection.commit()
 
 
-def get_group_id(message):
+async def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
     group_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET group_id = %s WHERE user_id = %s", (group_id, message.from_user.id))
@@ -78,7 +78,7 @@ def get_group_id(message):
     menu(message)
 
 
-def get_teacher_id(message):
+async def get_teacher_id(message):
     db_object.execute(f"SELECT teacher_id from teachers where teacher_name = '{message.text}'")
     teacher_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET teacher_id = %s WHERE user_id = %s", (teacher_id, message.from_user.id))
@@ -87,7 +87,7 @@ def get_teacher_id(message):
 
 
 @bot.message_handler(commands=["menu"])
-def menu(message):
+async def menu(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item1 = types.KeyboardButton(f"Розклад")
     item2 = types.KeyboardButton(f"Профіль")
@@ -101,7 +101,7 @@ def menu(message):
     bot.register_next_step_handler(sent, menu_check)
 
 
-def menu_check(message):
+async def menu_check(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     if message.text == "Розклад":
@@ -116,19 +116,18 @@ def menu_check(message):
         bot.register_next_step_handler(sent, schedule_check)
 
     elif message.text == "Профіль":
-        bot.send_message(message.chat.id, f"Що вас цікавить?")
+        menu(message)
     elif message.text == "Поділитись":
-        bot.send_message(message.chat.id, f"Що вас цікавить?")
+        menu(message)
     elif message.text == "Будильник":
-        bot.send_message(message.chat.id, f"Що вас цікавить?")
+        menu(message)
     elif message.text == "Редагувати профіль":
         db_object.execute(f"delete from users where user_id = {message.from_user.id}")
         db_connection.commit()
         start(message)
 
 
-def schedule_check(message):
-
+async def schedule_check(message):
     if message.text == "Сьогодні":
         day_today = calendar.day_name[date.today().weekday()]
         today(message, day_today)
@@ -145,7 +144,7 @@ def schedule_check(message):
 
 
 @bot.message_handler(commands=["today"])
-def today(message, day):
+async def today(message, day):
     first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
@@ -171,7 +170,7 @@ def today(message, day):
     bot.register_next_step_handler(message, schedule_check)
 
 
-def check_user_fk(message):
+async def check_user_fk(message):
     db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
 
@@ -196,12 +195,12 @@ def check_user_fk(message):
 
 
 @bot.message_handler(commands=["tomorrow"])
-def tomorrow(message, tomorrow_day):
+async def tomorrow(message, tomorrow_day):
     today(message, tomorrow_day)
 
 
 @bot.message_handler(commands=["week"])
-def week(message):
+async def week(message):
     first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
@@ -230,8 +229,33 @@ def week(message):
     bot.register_next_step_handler(message, schedule_check)
 
 
+@bot.message_handler(commands=["profile"])
+async def profile(message):
+    db_object.execute(f"SELECT group_id, teacher_id FROM users")
+    result = db_object.fetchall()
+    for item in result:
+        group_id = item[0]
+        teacher_id = item[1]
+
+    if group_id != 'null':
+        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name from users"
+                          f"where users.group_id = {group_id}")
+        result = db_object.fetchall()
+    elif teacher_id != 'null':
+        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, teachers.teacher_name from users"
+                          f"where users.teacher_id = {teacher_id}")
+        result = db_object.fetchall()
+
+    for item in result:
+        sent = f"{item[0]}\n{item[1]}\n{item[2]}\n{item[3]}\n"
+
+    bot.send_message(message.chat.id, sent)
+    menu(message)
+
+
+
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
-def redirect_message():
+async def redirect_message():
     json_string = request.get_data().decode("utf-8")
     update = telebot.types.Update.de_json(json_string)
     bot.process_new_updates([update])
