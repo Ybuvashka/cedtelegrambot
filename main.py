@@ -251,7 +251,7 @@ def profile(message):
         result = db_object.fetchall()
 
     for item in result:
-        sent += f"{item[0]}\n{item[1]}\n{item[2]}\n{item[3]}"
+        sent += f"Ваш ID: {item[0]}\nNickname: {item[1]}\nРоль: {item[2]}\n---------------\n{item[3]}\n---------------"
 
     bot.send_message(message.chat.id, sent)
     menu(message)
