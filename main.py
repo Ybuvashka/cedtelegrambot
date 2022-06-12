@@ -161,11 +161,11 @@ def today(message, day):
     result = db_object.fetchall()
 
     if not result:
-        message = bot.send_message(message.chat.id, f"Не має пар!")
+        bot.send_message(message.chat.id, f"Не має пар!")
     else:
         for row in result:
             sent += f'{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n'
-        message = bot.send_message(message.chat.id, sent)
+        bot.send_message(message.chat.id, sent)
 
     schedule_check(message)
 
@@ -224,7 +224,7 @@ def week(message):
             for row in result:
                 sent += f"{row[0]} пара \n{row[1]}\n аудиторія: {row[2]}\n{row[3]}\n\n"
 
-    message = bot.send_message(message.chat.id, sent)
+    bot.send_message(message.chat.id, sent)
 
     schedule_check(message)
 
