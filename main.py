@@ -18,7 +18,7 @@ db_object = db_connection.cursor()
 
 
 @bot.message_handler(commands=["start"])
-async def start(message):
+def start(message):
     db_object.execute(f"SELECT user_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchone()
 
@@ -39,7 +39,7 @@ async def start(message):
         menu(message)
 
 
-async def set_role(message):
+def set_role(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
     if message.text == "Студент":
@@ -70,7 +70,7 @@ async def set_role(message):
     db_connection.commit()
 
 
-async def get_group_id(message):
+def get_group_id(message):
     db_object.execute(f"SELECT group_id from groups where group_name = '{message.text}'")
     group_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET group_id = %s WHERE user_id = %s", (group_id, message.from_user.id))
@@ -78,7 +78,7 @@ async def get_group_id(message):
     menu(message)
 
 
-async def get_teacher_id(message):
+def get_teacher_id(message):
     db_object.execute(f"SELECT teacher_id from teachers where teacher_name = '{message.text}'")
     teacher_id = db_object.fetchone()
     db_object.execute(f"UPDATE users SET teacher_id = %s WHERE user_id = %s", (teacher_id, message.from_user.id))
@@ -87,7 +87,7 @@ async def get_teacher_id(message):
 
 
 @bot.message_handler(commands=["menu"])
-async def menu(message):
+def menu(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item1 = types.KeyboardButton(f"Розклад")
     item2 = types.KeyboardButton(f"Профіль")
@@ -101,7 +101,7 @@ async def menu(message):
     bot.register_next_step_handler(sent, menu_check)
 
 
-async def menu_check(message):
+def menu_check(message):
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     if message.text == "Розклад":
@@ -127,7 +127,7 @@ async def menu_check(message):
         start(message)
 
 
-async def schedule_check(message):
+def schedule_check(message):
     if message.text == "Сьогодні":
         day_today = calendar.day_name[date.today().weekday()]
         today(message, day_today)
@@ -144,7 +144,7 @@ async def schedule_check(message):
 
 
 @bot.message_handler(commands=["today"])
-async def today(message, day):
+def today(message, day):
     first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
@@ -170,7 +170,7 @@ async def today(message, day):
     bot.register_next_step_handler(message, schedule_check)
 
 
-async def check_user_fk(message):
+def check_user_fk(message):
     db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
 
@@ -195,12 +195,12 @@ async def check_user_fk(message):
 
 
 @bot.message_handler(commands=["tomorrow"])
-async def tomorrow(message, tomorrow_day):
+def tomorrow(message, tomorrow_day):
     today(message, tomorrow_day)
 
 
 @bot.message_handler(commands=["week"])
-async def week(message):
+def week(message):
     first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
@@ -230,7 +230,7 @@ async def week(message):
 
 
 @bot.message_handler(commands=["profile"])
-async def profile(message):
+def profile(message):
     db_object.execute(f"SELECT group_id, teacher_id FROM users")
     result = db_object.fetchall()
     for item in result:
@@ -247,7 +247,7 @@ async def profile(message):
         result = db_object.fetchall()
 
     for item in result:
-        sent = f"{item[0]}\n{item[1]}\n{item[2]}\n{item[3]}\n"
+        sent = f"{item[0]}\n{item[1]}\n{item[2]}\n{item[3]}"
 
     bot.send_message(message.chat.id, sent)
     menu(message)
