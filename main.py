@@ -253,7 +253,6 @@ def profile(message):
     menu(message)
 
 
-
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
 def redirect_message():
     json_string = request.get_data().decode("utf-8")
