@@ -161,7 +161,7 @@ def today(message, day):
     result = db_object.fetchall()
 
     if not result:
-        bot.send_message(message.chat.id, f"Не має пар!")
+        line = bot.send_message(message.chat.id, f"Не має пар!")
     else:
         for row in result:
             sent += f'{row[0]} пара\n{row[1]}\nАудиторія: {row[2]}\n{row[3]}\n\n'
