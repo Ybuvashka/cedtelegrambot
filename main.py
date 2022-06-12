@@ -236,18 +236,18 @@ def profile(message):
     for item in result:
         group_id = item[0]
         teacher_id = item[1]
-
+    sent = ''
     if group_id != 'null':
-        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name from users"
+        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name from users "
                           f"where users.group_id = {group_id}")
         result = db_object.fetchall()
     elif teacher_id != 'null':
-        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, teachers.teacher_name from users"
+        db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, teachers.teacher_name from users "
                           f"where users.teacher_id = {teacher_id}")
         result = db_object.fetchall()
 
     for item in result:
-        sent = f"{item[0]}\n{item[1]}\n{item[2]}\n{item[3]}"
+        sent += f"{item[0]}\n{item[1]}\n{item[2]}\n{item[3]}"
 
     bot.send_message(message.chat.id, sent)
     menu(message)
