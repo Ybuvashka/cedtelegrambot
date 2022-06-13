@@ -178,11 +178,11 @@ def check_user_fk(message):
         teacher_id = row[1]
         group_id = row[2]
 
-    if "Студент" != user_role:
+    if  user_role != "Студент":
         first_param = f"teachers.teacher_name"
         second_param = f"groups.group_id"
         fk_id = group_id
-    elif "Викладач" != user_role:
+    elif user_role != "Викладач":
         first_param = f"groups.group_name"
         second_param = f"teachers.teacher_id"
         fk_id = teacher_id
