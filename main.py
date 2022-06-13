@@ -273,13 +273,11 @@ def alarm_clock():
     bot.send_message(564225964, f"Текст будильника")
 
 
-every(interval=1).monday.at("08:38:00").do(alarm_clock)
+every(interval=1).monday.do(alarm_clock)
 
 
 if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     server.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-    while True:
-        run_pending()
-        time.sleep(1)
+
