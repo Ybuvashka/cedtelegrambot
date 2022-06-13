@@ -6,7 +6,7 @@ from datetime import date, timedelta
 
 import psycopg2
 import schedule
-from schedule import *
+from schedule import every, repeat, run_pending
 import telebot
 from flask import Flask, request
 from telebot import types
@@ -281,5 +281,5 @@ if __name__ == "__main__":
     bot.set_webhook(url=APP_URL)
     server.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     while True:
-        schedule.run_pending()
+        run_pending()
         time.sleep(1)
