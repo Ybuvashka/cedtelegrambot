@@ -3,6 +3,8 @@ import telebot
 import logging
 import psycopg2
 import calendar
+import schedule
+import time
 from config import *
 from flask import Flask, request
 from telebot import types
@@ -251,10 +253,9 @@ def profile(message):
         result = db_object.fetchall()
 
     for item in result:
-        sent += f"Ваш ID: {item[0]}\nNickname: {item[1]}\nРоль: {item[2]}\n---------------\n{item[3]}\n---------------"
+        sent += f"Ваш ID: {item[0]}\nNickname: @{item[1]}\nРоль: {item[2]}\n---------------\n{item[3]}\n---------------"
 
-    bot.send_message(message.chat.id, sent)
-    menu(message)
+    bot.register_next_step_handler(sent, menu_check)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
@@ -263,6 +264,13 @@ def redirect_message():
     update = telebot.types.Update.de_json(json_string)
     bot.process_new_updates([update])
     return "!", 200
+
+
+def alarm_clock():
+    bot.send_message(564225964,"Текст будильника")
+
+
+schedule.every().monday.at("5:32").do(alarm_clock)
 
 
 if __name__ == "__main__":
