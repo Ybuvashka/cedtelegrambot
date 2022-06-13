@@ -124,8 +124,6 @@ def menu_check(message):
         profile(message)
     elif message.text == "Поділитись":
         menu(message)
-    elif message.text == "Будильник":
-        menu(message)
     elif message.text == "Редагувати профіль":
         db_object.execute(f"delete from users where user_id = {message.from_user.id}")
         db_connection.commit()
@@ -271,9 +269,6 @@ def redirect_message():
 
 def alarm_clock():
     bot.send_message(564225964, f"Текст будильника")
-
-
-every(interval=1).monday.do(alarm_clock)
 
 
 if __name__ == "__main__":
