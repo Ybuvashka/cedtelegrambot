@@ -273,7 +273,7 @@ def alarm_clock():
     bot.send_message(564225964, "Текст будильника")
 
 
-schedule.every().monday.at("5:34").do(alarm_clock)
+every().monday.at("5:34").do(alarm_clock)
 
 
 if __name__ == "__main__":
