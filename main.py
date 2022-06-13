@@ -6,6 +6,7 @@ from datetime import date, timedelta
 
 import psycopg2
 import schedule
+from schedule import every
 import telebot
 from flask import Flask, request
 from telebot import types
@@ -269,17 +270,16 @@ def redirect_message():
 
 
 def alarm_clock():
-    bot.send_message(564225964,"Текст будильника")
+    bot.send_message(564225964, "Текст будильника")
 
 
 schedule.every().monday.at("5:34").do(alarm_clock)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
 
 
 if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     server.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
