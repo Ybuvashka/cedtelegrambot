@@ -172,17 +172,17 @@ def today(message, day):
 def check_user_fk(message):
     db_object.execute(f"SELECT user_role, teacher_id, group_id from users where user_id = {message.from_user.id}")
     result = db_object.fetchall()
-
+    user_role = ''
     for row in result:
         user_role = row[0]
         teacher_id = row[1]
         group_id = row[2]
 
-    if  user_role != "Студент":
+    if user_role == "Викладач":
         first_param = f"teachers.teacher_name"
         second_param = f"groups.group_id"
         fk_id = group_id
-    elif user_role != "Викладач":
+    elif user_role == "Студент":
         first_param = f"groups.group_name"
         second_param = f"teachers.teacher_id"
         fk_id = teacher_id
@@ -267,4 +267,3 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     server.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
