@@ -6,7 +6,7 @@ from datetime import date, timedelta
 
 import psycopg2
 import schedule
-from schedule import every
+from schedule *
 import telebot
 from flask import Flask, request
 from telebot import types
