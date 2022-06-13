@@ -270,7 +270,7 @@ def redirect_message():
 
 
 def alarm_clock():
-    bot.send_message(564225964, "Текст будильника")
+    bot.send_message(564225964, f"Текст будильника")
 
 
 every(interval=1).monday.at("08:38:00").do(alarm_clock)
