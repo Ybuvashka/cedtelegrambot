@@ -93,10 +93,9 @@ def menu(message):
     item1 = types.KeyboardButton(f"Розклад")
     item2 = types.KeyboardButton(f"Профіль")
     item3 = types.KeyboardButton(f"Поділитись")
-    item4 = types.KeyboardButton(f"Будильник")
-    item5 = types.KeyboardButton(f"Редагувати профіль")
+    item4 = types.KeyboardButton(f"Редагувати профіль")
 
-    markup.add(item1, item2, item3, item4, item5)
+    markup.add(item1, item2, item3, item4)
 
     sent = bot.send_message(message.chat.id, f"Що вас цікавить?", reply_markup=markup)
     bot.register_next_step_handler(sent, menu_check)
@@ -119,6 +118,7 @@ def menu_check(message):
     elif message.text == "Профіль":
         profile(message)
     elif message.text == "Поділитись":
+        bot.send_message(message.chat.id, f"https://t.me/ced_tgbot")
         menu(message)
     elif message.text == "Редагувати профіль":
         db_object.execute(f"delete from users where user_id = {message.from_user.id}")
