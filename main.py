@@ -267,10 +267,6 @@ def redirect_message():
     return "!", 200
 
 
-def alarm_clock():
-    bot.send_message(564225964, f"Текст будильника")
-
-
 if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
