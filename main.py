@@ -1,12 +1,8 @@
 import calendar
 import logging
 import os
-import time
 from datetime import date, timedelta
-
 import psycopg2
-import schedule
-from schedule import every, repeat, run_pending
 import telebot
 from flask import Flask, request
 from telebot import types
