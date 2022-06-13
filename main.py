@@ -1,14 +1,16 @@
-import os
-import telebot
-import logging
-import psycopg2
 import calendar
-import schedule
+import logging
+import os
 import time
-from config import *
+from datetime import date, timedelta
+
+import psycopg2
+import schedule
+import telebot
 from flask import Flask, request
 from telebot import types
-from datetime import date, timedelta
+
+from config import *
 
 bot = telebot.TeleBot(BOT_TOKEN)
 server = Flask(__name__)
@@ -271,6 +273,10 @@ def alarm_clock():
 
 
 schedule.every().monday.at("5:34").do(alarm_clock)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
 
 if __name__ == "__main__":
