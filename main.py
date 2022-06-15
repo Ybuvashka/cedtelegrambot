@@ -196,8 +196,9 @@ def check_user_fk(message):
 
 @bot.message_handler(commands=["tomorrow"])
 def tomorrow(message):
-    tomorrow_day = calendar.day_name[date.today().weekday()] + datetime.timedelta(days=1)
-    today(message, tomorrow_day)
+    tomorrow_day = datetime.date.today() + datetime.timedelta(days=1)
+    day = calendar.day_name[tomorrow_day.weekday()]
+    today(message, day)
 
 
 @bot.message_handler(commands=["week"])
