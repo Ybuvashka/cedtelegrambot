@@ -147,7 +147,7 @@ def today(message, day):
     first_param, second_param, fk_id = check_user_fk(message)
 
     sent = ''
-
+    bot.send_message(message.chat.id, f"day {day}")
     db_object.execute(
         f"select subjects.subject_number, subjects.subject_name, subjects.subject_audience, {first_param} "
         f"from subjects "
