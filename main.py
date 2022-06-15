@@ -132,8 +132,8 @@ def schedule_check(message):
         today(message, day_today)
 
     elif message.text == "Завтра":
-        tomorrow_day = date.today() + timedelta(days=1)
-        tomorrow(message, tomorrow_day)
+
+        tomorrow(message)
 
     elif message.text == "На тиждень":
         week(message)
@@ -194,7 +194,8 @@ def check_user_fk(message):
 
 
 @bot.message_handler(commands=["tomorrow"])
-def tomorrow(message, tomorrow_day):
+def tomorrow(message):
+    tomorrow_day = date.today() + timedelta(days=1)
     today(message, tomorrow_day)
 
 
