@@ -1,4 +1,5 @@
 import calendar
+import datetime
 import logging
 import os
 from datetime import date, timedelta
@@ -195,7 +196,7 @@ def check_user_fk(message):
 
 @bot.message_handler(commands=["tomorrow"])
 def tomorrow(message):
-    tomorrow_day = date.today() + timedelta(days=1)
+    tomorrow_day = calendar.day_name[date.today().weekday()] + datetime.timedelta(days=1)
     today(message, tomorrow_day)
 
 
