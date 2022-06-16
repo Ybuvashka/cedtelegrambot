@@ -93,7 +93,7 @@ def get_teacher_id(message):
 
 @bot.message_handler(commands=["menu"])
 def menu(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton(f"Розклад")
     item2 = types.KeyboardButton(f"Профіль")
     item3 = types.KeyboardButton(f"Поділитись")
@@ -150,7 +150,6 @@ def schedule_check(message):
     else:
         sent = bot.send_message(message.chat.id, f"Даної опції не існує:")
         bot.register_next_step_handler(sent, menu)
-
 
 
 @bot.message_handler(commands=["today"])
@@ -245,7 +244,7 @@ def week(message):
 def profile(message):
     db_object.execute(f"SELECT group_id, teacher_id FROM users")
     result = db_object.fetchall()
-    sent=''
+    sent = ''
     for item in result:
         group_id = item[0]
         teacher_id = item[1]
@@ -267,8 +266,7 @@ def profile(message):
         sent += f"Ваш ID: {item[0]}\nNickname: @{item[1]}\nРоль: {item[2]}\n---------------\n{item[3]}\n---------------"
 
     line = bot.send_message(message.chat.id, sent)
-
-    menu(message)
+    bot.register_next_step_handler(line, menu)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
