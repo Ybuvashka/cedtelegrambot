@@ -235,10 +235,11 @@ def week(message):
 def profile(message):
     db_object.execute(f"SELECT group_id, teacher_id FROM users")
     result = db_object.fetchall()
+    sent=''
     for item in result:
         group_id = item[0]
         teacher_id = item[1]
-    sent = ''
+
     if group_id is not None:
         db_object.execute(f"SELECT users.user_id, users.user_nickname, users.user_role, groups.group_name "
                           f"from users "
@@ -255,7 +256,9 @@ def profile(message):
     for item in result:
         sent += f"Ваш ID: {item[0]}\nNickname: @{item[1]}\nРоль: {item[2]}\n---------------\n{item[3]}\n---------------"
 
-    bot.register_next_step_handler(sent, menu_check)
+    line = bot.send_message(message.chat.id, sent)
+
+    bot.register_next_step_handler(line, menu_check)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
