@@ -2,7 +2,7 @@ import calendar
 import datetime
 import logging
 import os
-from datetime import date, timedelta
+from datetime import date
 import psycopg2
 import telebot
 from flask import Flask, request
@@ -258,7 +258,7 @@ def profile(message):
 
     line = bot.send_message(message.chat.id, sent)
 
-    bot.register_next_step_handler(line, menu_check)
+    menu(message)
 
 
 @server.route(f"/{BOT_TOKEN}", methods=["POST"])
