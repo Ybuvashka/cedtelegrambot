@@ -42,7 +42,7 @@ def start(message):
 
 
 def set_role(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     if message.text == "Студент":
         role = "Студент"
@@ -66,6 +66,9 @@ def set_role(message):
 
         sent = bot.send_message(message.chat.id, f"Виберіть викладача:", reply_markup=markup)
         bot.register_next_step_handler(sent, get_teacher_id)
+    else:
+        sent = bot.send_message(message.chat.id, f"Даної ролі не існує:")
+        bot.register_next_step_handler(sent, set_role)
 
     db_object.execute(f"INSERT INTO users(user_id, user_nickname, user_role) VALUES(%s,%s,%s)",
                       (message.from_user.id, message.from_user.username, role))
@@ -125,6 +128,9 @@ def menu_check(message):
         db_object.execute(f"delete from users where user_id = {message.from_user.id}")
         db_connection.commit()
         start(message)
+    else:
+        sent = bot.send_message(message.chat.id, f"Даної опції не існує:")
+        bot.register_next_step_handler(sent, menu_check)
 
 
 def schedule_check(message):
@@ -141,6 +147,10 @@ def schedule_check(message):
 
     elif message.text == "Назад":
         menu(message)
+    else:
+        sent = bot.send_message(message.chat.id, f"Даної опції не існує:")
+        bot.register_next_step_handler(sent, menu)
+
 
 
 @bot.message_handler(commands=["today"])
